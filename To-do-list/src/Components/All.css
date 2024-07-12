@@ -1,0 +1,8 @@
+.all{
+    width: 700px;
+    
+}
+
+.all .card button{
+    display: none;
+}

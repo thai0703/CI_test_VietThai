@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import All from './Components/All'
 import './App.css'
 import Active from './Components/Active'
@@ -8,20 +8,17 @@ import Completed from './Components/Completed'
 function App() {
     const [todo_change, setTodo_change] = useState('')
     const [todos, setTodos] = useState([])
-    const [checked, setChecked] = useState([])
+    const [tab, setTab] = useState(1)
+    
+    // useEffect(() => {
+    //   console.log('checked:', checked);
+    //   console.log('todos:', todos);
+    // }, [checked, todos]);
 
     const handleChange = (e)=>{
         setTodo_change(e.target.value)
     }
 
-    // const handleBoxChange = (e)=>{
-    //     if (e.target.checked){
-    //         setChecked([...checked, e.target.value])
-    //     }
-    //     else{
-    //         setChecked(checked.filter((item)=>{item !== e.target.value}))
-    //     }
-    // }
 
     const handleAdd = ()=>{
         if(todo_change != ''){
@@ -30,46 +27,69 @@ function App() {
 
             const newTodo = {
                 id: Math.random(),
-                job: todo_change
+                job: todo_change,
+                done: false
             }
             newTodos.push(newTodo);
 
             setTodos(newTodos);
-        }    
+        }  
+          
     }
 
-    const handleBoxChange = (e)=>{
-      const filter = todos.filter((todo) =>{
-        if(todo.job.toLowerCase().includes(e.target.value.toLowerCase())){
-          return todo
+    const handleBoxChange = (e) => {
+      const updatedTodos = todos.map((todo) => {
+        if (todo.job == e.target.value) {
+          return { ...todo, done: !todo.done }
         }
-      })
-      setChecked(...checked, filter)
+        return todo;
+      });
+      setTodos(updatedTodos);
     }
-    
-    console.log(checked)
 
-    const handleDelete = (key)=>{
-      // const deleted = todos.filter((todo) =>{
-      //   todo.id !== key          
-      //   }
-      // )
-      // setTodos(deleted)
+    const handleDelete = (key) => {
+      setTodos(todos.filter(todo => todo.id !== key));
+    };
+
+    const handleDeleteAll = () =>{
+      setTodos([])
     }
+
+    let showTab = null;
+    const changeTab = (e)=>{
+      const tabIndex = e.target.getAttribute('id')
+      setTab(tabIndex)
+      
+    }
+    if (tab == 1){
+        showTab = <All onchange={handleChange} onChange={handleBoxChange} onClick={handleAdd} todos={todos} todo_change={todo_change}></All>
+
+      }
+    if (tab == 2){
+        showTab = <Active onchange={handleChange} onChange={handleBoxChange} onClick={handleAdd} todos={todos} todo_change={todo_change}></Active>
+      }
+    if (tab == 3){
+        showTab = <Completed todos={todos} onChange={handleBoxChange} handleDelete={handleDelete} handleDeleteAll={handleDeleteAll}></Completed>
+      }
+
 
   return (
     <>
       <div className="todo">
         <h1>#todo</h1>
         <div className="filter">
-          <div>All</div>
-          <div>Active</div>
-          <div>Completed</div>
+          <div onClick={changeTab} id='1' style={{
+            borderBottom: tab == 1 ? '2px solid blue' : 'none',
+          }}>All</div>
+          <div onClick={changeTab} id='2' style={{
+            borderBottom: tab == 2 ? '2px solid blue' : 'none',
+          }}>Active</div>
+          <div onClick={changeTab} id='3' style={{
+            borderBottom: tab == 3 ? '2px solid blue' : 'none',
+          }}>Completed</div>
         </div>
         <hr />
-        <All onchange={handleChange} onChange={handleBoxChange} onClick={handleAdd} todos={todos} todo_change={todo_change}></All>
-        {/* <Active></Active> */}
-        <Completed checked={checked} onChange={handleBoxChange} handleDelete={handleDelete}></Completed>
+        {showTab}       
       </div>
     </>
   )

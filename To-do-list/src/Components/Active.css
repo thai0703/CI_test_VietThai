@@ -1,0 +1,8 @@
+.acitve{
+    width: 700px;
+    
+}
+
+.active .card button{
+    display: none;
+}

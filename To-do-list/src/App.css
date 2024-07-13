@@ -28,6 +28,9 @@
   justify-content: space-around;
   font-weight: 400px;
 }
+.todo .filter div:focus{
+  border: solid 1px blue;
+}
 .todo hr{
   color: black;
   width: 700px;

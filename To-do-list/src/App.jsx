@@ -11,9 +11,8 @@ function App() {
     const [tab, setTab] = useState(1)
     
     // useEffect(() => {
-    //   console.log('checked:', checked);
     //   console.log('todos:', todos);
-    // }, [checked, todos]);
+    // }, [todos]);
 
     const handleChange = (e)=>{
         setTodo_change(e.target.value)
@@ -47,8 +46,11 @@ function App() {
       setTodos(updatedTodos);
     }
 
-    const handleDelete = (key) => {
-      setTodos(todos.filter(todo => todo.id !== key));
+    const handleDelete = (e) => {
+      let index = todos.findIndex((todo) => todo.id == e.currentTarget.value)
+      const deleteTodos = todos.splice(index, 1)
+      const newTodos = todos.filter((todo) => todo != deleteTodos)
+      setTodos(newTodos)
     };
 
     const handleDeleteAll = () =>{
